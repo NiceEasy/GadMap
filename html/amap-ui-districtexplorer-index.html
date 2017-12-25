@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <div id="outer-box" style="height: 70%;width: 50%;">
+    <div id="outer-box">
     	<div id="locTip">点击地图进行区域定位----TEST</div>
         <div id="container" tabindex="0"></div>
         <div id="panel" class="scrollbar1" style="display: none;">
@@ -46,8 +46,10 @@
 
         //当前聚焦的区域
         var currentAreaNode = null;
+
         //鼠标hover提示内容
         var $tipMarkerContent = $('<div class="tipMarker top"></div>');
+
         var tipMarker = new AMap.Marker({
             content: $tipMarkerContent.get(0),
             offset: new AMap.Pixel(0, 0),
@@ -56,12 +58,17 @@
 
         //根据Hover状态设置相关样式
         function toggleHoverFeature(feature, isHover, position) {
+
             tipMarker.setMap(isHover ? map : null);
+
             if (!feature) {
                 return;
             }
+
             var props = feature.properties;
+
             if (isHover) {
+
                 //更新提示内容
                 $tipMarkerContent.html(props.adcode + ': ' + props.name);
                 //更新位置
@@ -73,6 +80,7 @@
             //更新相关多边形的样式
             var polys = districtExplorer.findFeaturePolygonsByAdcode(props.adcode);
             for (var i = 0, len = polys.length; i < len; i++) {
+
                 polys[i].setOptions({
                     fillOpacity: isHover ? 0.5 : 0.2
                 });
@@ -110,7 +118,9 @@
 
         //外部区域被点击
         districtExplorer.on('outsideClick', function(e) {
+
             districtExplorer.locatePosition(e.originalEvent.lnglat, function(error, routeFeatures) {
+
                 if (routeFeatures && routeFeatures.length > 1) {
                     //切换到省级区域
                     switch2AreaNode(routeFeatures[1].properties.adcode);
@@ -126,44 +136,59 @@
 
         //绘制区域面板的节点
         function renderAreaPanelNode(ele, props, color) {
+
             var $box = $('<li/>').addClass('lv_' + props.level);
+
             var $h2 = $('<h2/>').addClass('lv_' + props.level).attr({
                 'data-adcode': props.adcode,
                 'data-level': props.level,
                 'data-children-num': props.childrenNum || void(0),
                 'data-center': props.center.join(',')
             }).html(props.name).appendTo($box);
+
             if (color) {
                 $h2.css('borderColor', color);
             }
 
             //如果存在子节点
             if (props.childrenNum > 0) {
+
                 //显示隐藏
                 $('<div class="showHideBtn"></div>').appendTo($box);
+
                 //子区域列表
                 $('<ul/>').addClass('sublist lv_' + props.level).appendTo($box);
+
                 $('<div class="clear"></div>').appendTo($box);
+
                 if (props.level !== 'country') {
                     $box.addClass('hide-sub');
                 }
             }
+
             $box.appendTo(ele);
         }
 
+
         //填充某个节点的子区域列表
         function renderAreaPanel(areaNode) {
+
             var props = areaNode.getProps();
+
             var $subBox = $('#area-tree').find('h2[data-adcode="' + props.adcode + '"]').siblings('ul.sublist');
+
             if (!$subBox.length) {
                 //父节点不存在，先创建
                 renderAreaPanelNode($('#area-tree'), props);
                 $subBox = $('#area-tree').find('ul.sublist');
             }
+
             if ($subBox.attr('data-loaded') === 'rendered') {
                 return;
             }
+
             $subBox.attr('data-loaded', 'rendered');
+
             var subFeatures = areaNode.getSubFeatures();
 
             //填充子区域
@@ -174,14 +199,19 @@
 
         //绘制某个区域的边界
         function renderAreaPolygons(areaNode) {
+
             //更新地图视野
             map.setBounds(areaNode.getBounds(), null, null, true);
+
             //清除已有的绘制内容
             districtExplorer.clearFeaturePolygons();
+
             //绘制子区域
             districtExplorer.renderSubFeatures(areaNode, function(feature, i) {
+
                 var fillColor = colors[i % colors.length];
                 var strokeColor = colors[colors.length - 1 - i % colors.length];
+
                 return {
                     cursor: 'default',
                     bubble: true,
@@ -207,34 +237,50 @@
 
         //切换区域后刷新显示内容
         function refreshAreaNode(areaNode) {
+
             districtExplorer.setHoverFeature(null);
+
             renderAreaPolygons(areaNode);
+
             //更新选中节点的class
             var $nodeEles = $('#area-tree').find('h2');
+
             $nodeEles.removeClass('selected');
+
             var $selectedNode = $nodeEles.filter('h2[data-adcode=' + areaNode.getAdcode() + ']').addClass('selected');
+
             //展开下层节点
             $selectedNode.closest('li').removeClass('hide-sub');
+
             //折叠下层的子节点
             $selectedNode.siblings('ul.sublist').children().addClass('hide-sub');
         }
 
         //切换区域
         function switch2AreaNode(adcode, callback) {
+
             if (currentAreaNode && ('' + currentAreaNode.getAdcode() === '' + adcode)) {
                 return;
             }
+
             loadAreaNode(adcode, function(error, areaNode) {
+
                 if (error) {
+
                     if (callback) {
                         callback(error);
                     }
+
                     return;
                 }
+
                 currentAreaNode = window.currentAreaNode = areaNode;
+
                 //设置当前使用的定位用节点
                 districtExplorer.setAreaNodesForLocating([currentAreaNode]);
+
                 refreshAreaNode(areaNode);
+
                 if (callback) {
                     callback(null, areaNode);
                 }
@@ -243,15 +289,22 @@
 
         //加载区域
         function loadAreaNode(adcode, callback) {
+
             districtExplorer.loadAreaNode(adcode, function(error, areaNode) {
+
                 if (error) {
+
                     if (callback) {
                         callback(error);
                     }
+
                     console.error(error);
+
                     return;
                 }
+
                 renderAreaPanel(areaNode);
+
                 if (callback) {
                     callback(null, areaNode);
                 }
@@ -259,19 +312,25 @@
         }
 
         $('#area-tree').on('mouseenter mouseleave', 'h2[data-adcode]', function(e) {
+
             if (e.type === 'mouseleave') {
                 districtExplorer.setHoverFeature(null);
                 return;
             }
+
             var adcode = $(this).attr('data-adcode');
+
             districtExplorer.setHoverFeature(currentAreaNode.getSubFeatureByAdcode(adcode));
         });
 
 
         $('#area-tree').on('click', 'h2[data-children-num]', function() {
+
             var adcode = $(this).attr('data-adcode');
+
             switch2AreaNode(adcode);
         });
+
         $('#area-tree').on('click', '.showHideBtn', function() {
             var $li = $(this).closest('li');
             $li.toggleClass('hide-sub');
