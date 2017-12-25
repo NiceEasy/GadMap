@@ -9,7 +9,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <title>行政区浏览</title>
-    
+    <script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
 </head>
 
 <body>
@@ -33,6 +33,9 @@
         zoomEnable:true,
 		dragEnable: true
     });
+
+    
+    
     //just some colors
     var colors = [
         "#3366cc", "#dc3912", "#ff9900", "#109618", "#990099", "#0099c6", "#dd4477", "#66aa00",
@@ -70,21 +73,17 @@
             }
 
             var props = feature.properties;
-
             if (isHover) {
-
                 //更新提示内容
                 $tipMarkerContent.html(props.adcode + ': ' + props.name);
                 //更新位置
                 tipMarker.setPosition(position || props.center);
             }
-
             $('#area-tree').find('h2[data-adcode="' + props.adcode + '"]').toggleClass('hover', isHover);
 
             //更新相关多边形的样式
             var polys = districtExplorer.findFeaturePolygonsByAdcode(props.adcode);
             for (var i = 0, len = polys.length; i < len; i++) {
-
                 polys[i].setOptions({
                     fillOpacity: isHover ? 0.5 : 0.2
                 });
@@ -105,9 +104,7 @@
 
         //feature被点击
         districtExplorer.on('featureClick', function(e, feature) {
-
             var props = feature.properties;
-
             //如果存在子节点
             if (props.childrenNum > 0) {
                 //切换聚焦区域
@@ -122,9 +119,7 @@
 
         //外部区域被点击
         districtExplorer.on('outsideClick', function(e) {
-
             districtExplorer.locatePosition(e.originalEvent.lnglat, function(error, routeFeatures) {
-
                 if (routeFeatures && routeFeatures.length > 1) {
                     //切换到省级区域
                     switch2AreaNode(routeFeatures[1].properties.adcode);
@@ -132,7 +127,6 @@
                     //切换到全国
                     switch2AreaNode(100000);
                 }
-
             }, {
                 levelLimit: 2
             });
@@ -140,30 +134,23 @@
 
         //绘制区域面板的节点
         function renderAreaPanelNode(ele, props, color) {
-
         }
 
 
         //填充某个节点的子区域列表
         function renderAreaPanel(areaNode) {
-
         }
 
         //绘制某个区域的边界
         function renderAreaPolygons(areaNode) {
-
             //更新地图视野
             map.setBounds(areaNode.getBounds(), null, null, true);
-
             //清除已有的绘制内容
             districtExplorer.clearFeaturePolygons();
-
             //绘制子区域
             districtExplorer.renderSubFeatures(areaNode, function(feature, i) {
-
                 var fillColor = colors[i % colors.length];
                 var strokeColor = colors[colors.length - 1 - i % colors.length];
-
                 return {
                     cursor: 'default',
                     bubble: true,
@@ -189,50 +176,34 @@
 
         //切换区域后刷新显示内容
         function refreshAreaNode(areaNode) {
-
             districtExplorer.setHoverFeature(null);
-
             renderAreaPolygons(areaNode);
-
             //更新选中节点的class
             var $nodeEles = $('#area-tree').find('h2');
-
             $nodeEles.removeClass('selected');
-
             var $selectedNode = $nodeEles.filter('h2[data-adcode=' + areaNode.getAdcode() + ']').addClass('selected');
-
             //展开下层节点
             $selectedNode.closest('li').removeClass('hide-sub');
-
             //折叠下层的子节点
             $selectedNode.siblings('ul.sublist').children().addClass('hide-sub');
         }
 
         //切换区域
         function switch2AreaNode(adcode, callback) {
-
             if (currentAreaNode && ('' + currentAreaNode.getAdcode() === '' + adcode)) {
                 return;
             }
-
             loadAreaNode(adcode, function(error, areaNode) {
-
                 if (error) {
-
                     if (callback) {
                         callback(error);
                     }
-
                     return;
                 }
-
                 currentAreaNode = window.currentAreaNode = areaNode;
-
                 //设置当前使用的定位用节点
                 districtExplorer.setAreaNodesForLocating([currentAreaNode]);
-
                 refreshAreaNode(areaNode);
-
                 if (callback) {
                     callback(null, areaNode);
                 }
@@ -241,22 +212,15 @@
 
         //加载区域
         function loadAreaNode(adcode, callback) {
-
             districtExplorer.loadAreaNode(adcode, function(error, areaNode) {
-
                 if (error) {
-
                     if (callback) {
                         callback(error);
                     }
-
                     console.error(error);
-
                     return;
                 }
-
                 renderAreaPanel(areaNode);
-
                 if (callback) {
                     callback(null, areaNode);
                 }
@@ -269,17 +233,13 @@
                 districtExplorer.setHoverFeature(null);
                 return;
             }
-
             var adcode = $(this).attr('data-adcode');
-
             districtExplorer.setHoverFeature(currentAreaNode.getSubFeatureByAdcode(adcode));
         });
 
 
         $('#area-tree').on('click', 'h2[data-children-num]', function() {
-
             var adcode = $(this).attr('data-adcode');
-
             switch2AreaNode(adcode);
         });
 
@@ -302,8 +262,9 @@
         });
 
         //全国
-        switch2AreaNode(100000);
+        switch2AreaNode(110000);
     });
+  
     </script>
     
     <script>
