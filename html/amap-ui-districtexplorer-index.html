@@ -14,11 +14,11 @@
 
 <body>
 	<div>
-	<div id="main" style="width:400px;height: 500px;float: left;border:0.5px solid red;"></div>
-    <div id="outer-box" style="width: 600px;height: 500px;float: left;border:0.5px solid red;">
-        <div id="container" tabindex="0" ></div>
-  
-    </div>
+		<div id="main" style="width:400px;height: 500px;float: left;border:0.5px solid red;"></div>
+	    <div id="outer-box" style="width: 600px;height: 500px;float: left;border:0.5px solid red;">
+	        <div id="container" tabindex="0" ></div>
+	    </div>
+	    <div id="mainTwo" style="width:340px;height: 500px;float: left;border:0.5px solid red;"></div>
     </div>
     <script type="text/javascript" src='//webapi.amap.com/maps?v=1.4.2&key=c34c16b93ac9c9ffa87b39115a420b4c'></script>
     <!-- UI组件库 1.0 -->
@@ -329,6 +329,29 @@
 
         // 使用刚指定的配置项和数据显示图表。
         myChart.setOption(option);
+    </script>
+    
+    <script>
+    	var myChartTwo = echarts.init(document.getElementById('mainTwo'));
+		var option = {
+            title: {
+                text: 'ECharts 入门示例'
+            },
+            tooltip: {},
+            legend: {
+                data:['销量']
+            },
+            xAxis: {
+                data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+            },
+            yAxis: {},
+            series: [{
+                name: '销量',
+                type: 'bar',
+                data: [5, 20, 36, 10, 10, 20]
+            }]
+        };
+    	myChartTwo.setOption(option);
     </script>
 </body>
 </html>
