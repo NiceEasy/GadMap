@@ -3,21 +3,24 @@
 
 <head>
     <!-- 原始地址：//webapi.amap.com/ui/1.0/ui/geo/DistrictExplorer/examples/index.html -->
+    <script src="../js/echarts.min.js"></script>
     <base href="//webapi.amap.com/ui/1.0/ui/geo/DistrictExplorer/examples/" />
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <title>行政区浏览</title>
-    <link rel="stylesheet" type="text/css" href="./area.css">
+    <link rel="stylesheet" type="text/css" href="../css/area.css">
 </head>
 
 <body>
-    <div id="outer-box">
-    	<div id="locTip">点击地图进行区域定位----TEST</div>
-        <div id="container" tabindex="0"></div>
-        <div id="panel" class="scrollbar1" style="display: none;">
+	<div>
+	<div id="main" style="width:500px;height: 500px;float: left;"></div>
+    <div id="outer-box" style="width: 530px;height: 500px;float: left;">
+        <div id="container" tabindex="0" ></div>
+        <div id="panel" class="scrollbar1" style="display: none;width: 0px;height: 0px;">
             <ul id="area-tree">
             </ul>
         </div>
+    </div>
     </div>
     <script type="text/javascript" src='//webapi.amap.com/maps?v=1.4.2&key=c34c16b93ac9c9ffa87b39115a420b4c'></script>
     <!-- UI组件库 1.0 -->
@@ -137,64 +140,12 @@
         //绘制区域面板的节点
         function renderAreaPanelNode(ele, props, color) {
 
-            var $box = $('<li/>').addClass('lv_' + props.level);
-
-            var $h2 = $('<h2/>').addClass('lv_' + props.level).attr({
-                'data-adcode': props.adcode,
-                'data-level': props.level,
-                'data-children-num': props.childrenNum || void(0),
-                'data-center': props.center.join(',')
-            }).html(props.name).appendTo($box);
-
-            if (color) {
-                $h2.css('borderColor', color);
-            }
-
-            //如果存在子节点
-            if (props.childrenNum > 0) {
-
-                //显示隐藏
-                $('<div class="showHideBtn"></div>').appendTo($box);
-
-                //子区域列表
-                $('<ul/>').addClass('sublist lv_' + props.level).appendTo($box);
-
-                $('<div class="clear"></div>').appendTo($box);
-
-                if (props.level !== 'country') {
-                    $box.addClass('hide-sub');
-                }
-            }
-
-            $box.appendTo(ele);
         }
 
 
         //填充某个节点的子区域列表
         function renderAreaPanel(areaNode) {
 
-            var props = areaNode.getProps();
-
-            var $subBox = $('#area-tree').find('h2[data-adcode="' + props.adcode + '"]').siblings('ul.sublist');
-
-            if (!$subBox.length) {
-                //父节点不存在，先创建
-                renderAreaPanelNode($('#area-tree'), props);
-                $subBox = $('#area-tree').find('ul.sublist');
-            }
-
-            if ($subBox.attr('data-loaded') === 'rendered') {
-                return;
-            }
-
-            $subBox.attr('data-loaded', 'rendered');
-
-            var subFeatures = areaNode.getSubFeatures();
-
-            //填充子区域
-            for (var i = 0, len = subFeatures.length; i < len; i++) {
-                renderAreaPanelNode($subBox, areaNode.getPropsOfFeature(subFeatures[i]), colors[i % colors.length]);
-            }
         }
 
         //绘制某个区域的边界
@@ -352,6 +303,34 @@
         //全国
         switch2AreaNode(100000);
     });
+    </script>
+    
+    <script>
+    	// 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: 'ECharts 入门示例'
+            },
+            tooltip: {},
+            legend: {
+                data:['销量']
+            },
+            xAxis: {
+                data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+            },
+            yAxis: {},
+            series: [{
+                name: '销量',
+                type: 'bar',
+                data: [5, 20, 36, 10, 10, 20]
+            }]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
     </script>
 </body>
 </html>
