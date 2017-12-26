@@ -2,12 +2,15 @@
 <html lang="zh-CN">
 
 <head>
+	 <meta charset="utf-8">
+	 <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <!-- 原始地址：//webapi.amap.com/ui/1.0/ui/geo/DistrictExplorer/examples/index.html -->
     <script src="../js/echarts.min.js"></script>
     <link rel="stylesheet" type="text/css" href="../css/area.css">
+    <script src="../js/theme/my_chalk_theme20171226.js"></script>
     <base href="//webapi.amap.com/ui/1.0/ui/geo/DistrictExplorer/examples/" />
-    <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+   
+    
     <title>行政区浏览</title>
     <script type="text/javascript" src="http://cache.amap.com/lbs/static/addToolbar.js"></script>
 </head>
@@ -269,7 +272,7 @@
     
     <script>
     	// 基于准备好的dom，初始化echarts实例
-        var myChart = echarts.init(document.getElementById('main'));
+        var myChart = echarts.init(document.getElementById('main'), 'my_chalk_theme20171226');
 
         // 指定图表的配置项和数据
         var option = {
@@ -287,6 +290,11 @@
             series: [{
                 name: '销量',
                 type: 'bar',
+                itemStyle:{
+                        normal:{
+                            color:'#4ad2ff'
+                        }
+                      },
                 data: [5, 20, 36, 10, 10, 20]
             }]
         };
@@ -296,7 +304,7 @@
     </script>
     
     <script>
-    	var myChartTwo = echarts.init(document.getElementById('mainTwo'));
+    	var myChartTwo = echarts.init(document.getElementById('mainTwo'), 'my_chalk_theme20171226');
 		var option = {
             title: {
                 text: 'EChartsDemo2'
@@ -312,6 +320,11 @@
             series: [{
                 name: '销量',
                 type: 'bar',
+                itemStyle:{
+                            normal:{
+                                color:'#4ad2ff'
+                            }
+                          },
                 data: [5, 20, 36, 10, 10, 20]
             }]
         };
@@ -319,7 +332,7 @@
     </script>
     
     <script>
-    	var myChartThird = echarts.init(document.getElementById('mainThird'));
+    	var myChartThird = echarts.init(document.getElementById('mainThird'), 'my_chalk_theme20171226');
     	function randomData() {
 		    now = new Date(+now + oneDay);
 		    value = value + Math.random() * 21 - 10;
@@ -373,6 +386,11 @@
 		        type: 'line',
 		        showSymbol: false,
 		        hoverAnimation: false,
+		        itemStyle:{
+                            normal:{
+                                color:'#4ad2ff'
+                            }
+                          },
 		        data: data
 		    }]
 		};
